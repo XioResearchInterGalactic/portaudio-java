@@ -1,5 +1,7 @@
 # JPortAudio - audio I/O for Java
 
+This fork adds ability to set host specific stream parameters. Currenlty only added WASAPI.
+
 JPortAudio is a Java wrapper for the [PortAudio](https://github.com/PortAudio/portaudio) audio library.
 It provides blocking read/write streams.
 JPortAudio can provide high resolution, eg. FLOAT data
