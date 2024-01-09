@@ -39,6 +39,7 @@
 #include "com_portaudio_PortAudio.h"
 #include "portaudio.h"
 #include "jpa_tools.h"
+#include "pa_win_wasapi.h"
 
 jint jpa_GetIntField( JNIEnv *env, jclass cls, jobject obj, const char *fieldName )
 {
@@ -205,4 +206,49 @@ PaStream *jpa_GetStreamPointer( JNIEnv *env, jobject blockingStream )
 {
 	jclass cls = (*env)->GetObjectClass(env, blockingStream);
 	return (PaStream *) jpa_GetLongField( env, cls, blockingStream, "nativeStream" );
+}
+
+// Get Java object class name
+jstring jpa_GetObjectClassName(JNIEnv *env, jobject obj) {
+    if (obj == NULL) return NULL;
+    jclass cls = (*env)->GetObjectClass(env, obj);
+    jmethodID getClassMethod = (*env)->GetMethodID(env, cls, "getClass", "()Ljava/lang/Class;");
+    jobject classObj = (*env)->CallObjectMethod(env, obj, getClassMethod);
+    jclass classClazz = (*env)->GetObjectClass(env, classObj);
+    jmethodID getNameMethod = (*env)->GetMethodID(env, classClazz, "getName", "()Ljava/lang/String;");
+    jstring classNameObj = (jstring)(*env)->CallObjectMethod(env, classObj, getNameMethod);
+    return classNameObj;
+}
+
+// Get 'hostParameters' field
+jobject jpa_GetHostParams(JNIEnv *env, jobject obj) {
+    if (obj == NULL) return NULL;
+    jclass cls = (*env)->GetObjectClass(env, obj);
+    jfieldID fid = (*env)->GetFieldID(env, cls, "hostParams", "Lcom/portaudio/HostParams;");
+    if (fid == NULL)
+    {
+        jpa_ThrowError( env, "Cannot find 'hostParams' JNI field" );
+        return 0;
+    }
+    else
+    {
+        return (*env)->GetObjectField( env, obj, fid );
+    }
+}
+
+// Map object to PaWasapiStreamInfo
+PaWasapiStreamInfo jpa_GetWasapiParams(JNIEnv *env, jobject obj) {
+    jclass cls = (*env)->GetObjectClass(env, obj);
+    PaWasapiStreamInfo wasapiInfo;
+    wasapiInfo.size = sizeof(PaWasapiStreamInfo);
+    wasapiInfo.hostApiType = paWASAPI;
+    wasapiInfo.version = 1;
+    wasapiInfo.channelMask = 0;
+    wasapiInfo.hostProcessorOutput = NULL;
+    wasapiInfo.hostProcessorInput = NULL;
+    wasapiInfo.flags = jpa_GetIntField( env, cls, obj, "flags" );
+    wasapiInfo.threadPriority = jpa_GetIntField( env, cls, obj, "threadPriority" );
+    wasapiInfo.streamCategory = jpa_GetIntField( env, cls, obj, "streamCategory" );
+    wasapiInfo.streamOption = jpa_GetIntField( env, cls, obj, "streamOption" );
+    return wasapiInfo;
 }

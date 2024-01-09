@@ -54,4 +54,5 @@ public class StreamParameters
 	public int channelCount = 2;
 	public int sampleFormat = PortAudio.FORMAT_FLOAT_32;
 	public double suggestedLatency = 0.050;
+	public HostParams hostParams = null;
 }

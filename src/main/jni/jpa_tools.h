@@ -38,6 +38,7 @@
 
 #include "com_portaudio_PortAudio.h"
 #include "portaudio.h"
+#include "pa_win_wasapi.h"
 
 #ifndef JPA_TOOLS_H
 #define JPA_TOOLS_H
@@ -58,5 +59,9 @@ jint jpa_CheckError( JNIEnv *env, PaError err );
 jint jpa_ThrowError( JNIEnv *env, const char *message );
 
 PaStream *jpa_GetStreamPointer( JNIEnv *env, jobject blockingStream );
+
+jstring jpa_GetObjectClassName( JNIEnv *env, jobject obj );
+jobject jpa_GetHostParams( JNIEnv *env, jobject obj );
+PaWasapiStreamInfo jpa_GetWasapiParams( JNIEnv *env, jobject obj );
 
 #endif /* JPA_TOOLS_H */

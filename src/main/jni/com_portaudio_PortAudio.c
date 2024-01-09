@@ -39,6 +39,7 @@
 #include "com_portaudio_PortAudio.h"
 #include "portaudio.h"
 #include "jpa_tools.h"
+#include "string.h"
 
 /*
  * Class:     com_portaudio_PortAudio
@@ -262,6 +263,24 @@ JNIEXPORT void JNICALL Java_com_portaudio_PortAudio_openStream
 
 	paInParams = jpa_FillStreamParameters(  env, inParams, &myInParams );
 	paOutParams = jpa_FillStreamParameters(  env, outParams, &myOutParams );
+
+    PaWasapiStreamInfo wasApiParams;
+    jobject inHostParams = jpa_GetHostParams(env, inParams);
+    if( inHostParams != NULL )
+    {
+        jclass cls = jpa_GetObjectClassName(env, inHostParams);
+        const char *className = (*env)->GetStringUTFChars(env, cls, NULL);
+        if( strcmp(className, "com.portaudio.WasapiParams") == 0 )
+        {
+            printf("Setting WASAPI host params \n");
+            wasApiParams = jpa_GetWasapiParams(env, inHostParams);
+            myInParams.hostApiSpecificStreamInfo = &wasApiParams;
+        } else {
+            printf("Unknown host params class name: %s\n", className);
+        }
+        (*env)->ReleaseStringUTFChars(env, cls, className);
+    }
+
 	err = Pa_OpenStream( &stream, paInParams, paOutParams, sampleRate, framesPerBuffer, flags, NULL, NULL );
 	if( jpa_CheckError( env, err ) == 0 )
 	{

@@ -3,11 +3,12 @@ cmake_minimum_required(VERSION 3.2)
 project(jportaudio_project)
 
 include_directories($ENV{JAVA_HOME}/include)
+include_directories($ENV{JAVA_HOME}/include/win32)
 include_directories($ENV{JAVA_HOME}/include/darwin)
 include_directories($ENV{JAVA_HOME}/include/linux)
 
 # for installed portaudio.h
-include_directories(/usr/local/include)
+include_directories(../portaudio/include)
 
 #link_directories(/usr/local/lib)
 link_directories(../portaudio/pagit)
