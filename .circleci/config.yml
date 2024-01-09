@@ -1,0 +1,96 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@3.2.0
+  macos: circleci/macos@2.4.1
+  win: circleci/windows@5.0
+
+jobs:
+  macos-build:
+    macos:
+      xcode: 14.3.1
+    steps:
+      - checkout
+      - aws-cli/setup:
+          aws-access-key-id: DEV_AWS_KEY_ID
+          aws-region: DEV_AWS_REGION
+          aws-secret-access-key: DEV_AWS_SECRET
+          profile-name: 619238747039_MerlynCodeArtifactAccess
+      - run:
+          name: Set CodeArtifact Auth Token as env var for all steps in this job
+          command: |
+            CODEARTIFACT_AUTH_TOKEN=`./getCodeArtifactAuthToken.sh`
+            echo "export CODEARTIFACT_AUTH_TOKEN=${CODEARTIFACT_AUTH_TOKEN}" >> "$BASH_ENV"
+      - run:
+          name: Install Cmake
+          command: |
+            brew install cmake
+      - run:
+          name: Install Java
+          command: |
+            brew install openjdk@21
+      - run:
+          name: Checkout PortAudio
+          command: |
+            cd ..
+            git clone https://github.com/PortAudio/portaudio.git portaudio
+            cd portaudio
+            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+      - run:
+          name: Build PortAudio
+          command: |
+            cd ../portaudio && mkdir build && cd build
+            cmake .. -DPA_BUILD_SHARED_LIBS=1
+            cmake --build . --config Release
+  windows-build:
+    executor:
+      name: win/default
+    steps:
+      - checkout
+      - aws-cli/setup:
+          aws-access-key-id: DEV_AWS_KEY_ID
+          aws-region: DEV_AWS_REGION
+          aws-secret-access-key: DEV_AWS_SECRET
+          profile-name: 619238747039_MerlynCodeArtifactAccess
+      - run:
+          name: Set CodeArtifact Auth Token as env var for all steps in this job
+          command: |
+            CODEARTIFACT_AUTH_TOKEN=`./getCodeArtifactAuthToken.sh`
+            echo "export CODEARTIFACT_AUTH_TOKEN=${CODEARTIFACT_AUTH_TOKEN}" >> "$BASH_ENV"
+      - run:
+          name: Install Cmake
+          command: |
+            choco install cmake -y
+            $env:Path+=";$Env:ProgramFiles\CMake\bin"; ./makeall.bat
+      - run:
+          name: Install Java
+          command: choco install openjdk11 --version=21.0.0.0 -y
+      - run:
+          name: Checkout PortAudio
+          command: |
+            cd ..
+            git clone https://github.com/PortAudio/portaudio.git portaudio
+            cd portaudio
+            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+      - run:
+          name: Build PortAudio x64
+          command: |
+            cd ../portaudio && mkdir x64 && cd x64
+            cmake -A x64 .. -DPA_BUILD_SHARED_LIBS=1
+            cmake --build . --config Release
+      -run:
+          name: Build JPortAudio x64
+          command: |
+            mkdir x64 && cd x64
+            cmake -A x64 .. -DPA_BUILD_SHARED_LIBS=1
+            cmake --build . --config Release
+
+workflows:
+  ci:
+    jobs:
+      - macos-build:
+          context:
+            - CodeArtifact
+      - windows-build:
+          context:
+            - CodeArtifact
