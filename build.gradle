@@ -1,11 +1,11 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-jar {
-    archiveBaseName = 'jportaudio'
-    archiveVersion =  '0.1.0'
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 repositories {
@@ -22,7 +22,27 @@ test {
     useJUnitPlatform()
 	testLogging {
 		events "passed", "skipped", "failed"
-
         showStandardStreams = true
+        exceptionFormat = TestExceptionFormat.FULL
 	}
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'org.merlyn'
+            artifactId = 'jportaudio'
+            version = version
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url = codeArtifactUrl
+            credentials {
+                username = codeArtifactUser
+                password = System.getenv(codeArtifactTokenEnvVar)
+            }
+        }
+    }
 }

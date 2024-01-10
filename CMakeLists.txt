@@ -8,11 +8,14 @@ include_directories($ENV{JAVA_HOME}/include/darwin)
 include_directories($ENV{JAVA_HOME}/include/linux)
 
 # for installed portaudio.h
-include_directories(../portaudio/include)
+include_directories(portaudio/include)
 
 #link_directories(/usr/local/lib)
-link_directories(../portaudio/pagit)
-link_directories(../portaudio/pagit/lib)
+link_directories(portaudio/pagit)
+link_directories(portaudio/pagit/lib)
+link_directories(portaudio/x64/Release)
+link_directories(portaudio/win32/Release)
+link_directories(portaudio/build)
 
 set (jportaudio_sources
     src/main/jni/com_portaudio_BlockingStream.c

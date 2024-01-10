@@ -5,8 +5,135 @@ orbs:
   macos: circleci/macos@2.4.1
   win: circleci/windows@5.0
 
+
 jobs:
-  macos-build:
+  generate-lib-mac-x64:
+    macos:
+      xcode: 14.3.1
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - checkout
+      - run:
+          name: Set JAVA_HOME
+          command: |
+            echo 'export JAVA_HOME=$(/usr/libexec/java_home)' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Install Cmake
+          command: |
+            brew install cmake
+      - run:
+          name: Checkout PortAudio
+          command: |
+            git clone https://github.com/PortAudio/portaudio.git portaudio
+            cd portaudio
+            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+      - run:
+          name: Build PortAudio
+          command: |
+            cd portaudio && mkdir build && cd build
+            cmake .. -DPA_BUILD_SHARED_LIBS=1
+            cmake --build . --config Release
+      - run:
+          name: Build JPortAudio
+          command: |
+            mkdir build && cd build
+            cmake .. -DPA_BUILD_SHARED_LIBS=1
+            cmake --build . --config Release
+      - run:
+          name: Move files to workspace
+          command: |
+            mkdir workspace
+            cd workspace
+            mv $CIRCLE_WORKING_DIRECTORY/portaudio/build/libportaudio.19.8.dylib libportaudio.dylib
+            mv $CIRCLE_WORKING_DIRECTORY/build/libjportaudio_0_1_0.dylib .
+      - persist_to_workspace:
+          root: .
+          paths:
+            - workspace
+  generate-lib-win-x64:
+    executor:
+      name: win/default
+      shell: bash.exe
+    steps:
+      - checkout
+      - run:
+          name: Install Cmake
+          command: |
+            choco install cmake -y
+            echo 'export PATH="/c/Program Files/CMake/bin:$PATH"' >> $BASH_ENV
+      - run:
+          name: Checkout PortAudio
+          command: |
+            git clone https://github.com/PortAudio/portaudio.git portaudio
+            cd portaudio
+            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+      - run:
+          name: Build PortAudio x64
+          command: |
+            cd portaudio && mkdir x64 && cd x64
+            cmake -A x64 .. -DPA_BUILD_SHARED_LIBS=1
+            cmake --build . --config Release
+      - run:
+          name: Build JPortAudio x64
+          command: |
+            mkdir x64 && cd x64
+            cmake -A x64 .. -DPA_BUILD_SHARED_LIBS=1
+            cmake --build . --config Release
+      - run:
+          name: Move files to workspace
+          command: |
+            mkdir workspace
+            cd workspace
+            mv $CIRCLE_WORKING_DIRECTORY/portaudio/x64/Release/portaudio.dll portaudio_x64.dll
+            mv $CIRCLE_WORKING_DIRECTORY/x64/Release/jportaudio_0_1_0.dll jportaudio_0_1_0_x64.dll
+      - persist_to_workspace:
+          root: .
+          paths:
+            - workspace
+  generate-lib-win-win32:
+    executor:
+      name: win/default
+      shell: bash.exe
+    steps:
+      - checkout
+      - run:
+          name: Install Cmake
+          command: |
+            choco install cmake -y
+            echo 'export PATH="/c/Program Files/CMake/bin:$PATH"' >> $BASH_ENV
+      - run:
+          name: Checkout PortAudio
+          command: |
+            git clone https://github.com/PortAudio/portaudio.git portaudio
+            cd portaudio
+            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+      - run:
+          name: Build PortAudio x64
+          command: |
+            cd portaudio && mkdir Win32 && cd Win32
+            cmake -A Win32 .. -DPA_BUILD_SHARED_LIBS=1
+            cmake --build . --config Release
+      - run:
+          name: Build JPortAudio x64
+          command: |
+            mkdir Win32 && cd Win32
+            cmake -A Win32 .. -DPA_BUILD_SHARED_LIBS=1
+            cmake --build . --config Release
+      - run:
+          name: Move files to workspace
+          command: |
+            mkdir workspace
+            cd workspace
+            mv $CIRCLE_WORKING_DIRECTORY/portaudio/Win32/Release/portaudio.dll portaudio_win32.dll
+            mv $CIRCLE_WORKING_DIRECTORY/Win32/Release/jportaudio_0_1_0.dll jportaudio_0_1_0_win32.dll
+            ls -l
+      - persist_to_workspace:
+          root: .
+          paths:
+            - workspace
+  build-jar:
     macos:
       xcode: 14.3.1
     steps:
@@ -16,81 +143,49 @@ jobs:
           aws-region: DEV_AWS_REGION
           aws-secret-access-key: DEV_AWS_SECRET
           profile-name: 619238747039_MerlynCodeArtifactAccess
+      - attach_workspace:
+          at: .
       - run:
           name: Set CodeArtifact Auth Token as env var for all steps in this job
           command: |
             CODEARTIFACT_AUTH_TOKEN=`./getCodeArtifactAuthToken.sh`
             echo "export CODEARTIFACT_AUTH_TOKEN=${CODEARTIFACT_AUTH_TOKEN}" >> "$BASH_ENV"
       - run:
-          name: Install Cmake
+          name: Move workspace files
           command: |
-            brew install cmake
+            mkdir -p src/main/resources
+            cp -R workspace/. src/main/resources
+            cd src/main/resources
+            ls -l
       - run:
-          name: Install Java
+          name: Grant Gradle wrapper execution permission
           command: |
-            brew install openjdk@21
+            chmod +x ./gradlew
       - run:
-          name: Checkout PortAudio
+          name: Build Jar
           command: |
-            cd ..
-            git clone https://github.com/PortAudio/portaudio.git portaudio
-            cd portaudio
-            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
-      - run:
-          name: Build PortAudio
-          command: |
-            cd ../portaudio && mkdir build && cd build
-            cmake .. -DPA_BUILD_SHARED_LIBS=1
-            cmake --build . --config Release
-  windows-build:
-    executor:
-      name: win/default
-    steps:
-      - checkout
-      - aws-cli/setup:
-          aws-access-key-id: DEV_AWS_KEY_ID
-          aws-region: DEV_AWS_REGION
-          aws-secret-access-key: DEV_AWS_SECRET
-          profile-name: 619238747039_MerlynCodeArtifactAccess
-      - run:
-          name: Set CodeArtifact Auth Token as env var for all steps in this job
-          command: |
-            CODEARTIFACT_AUTH_TOKEN=`./getCodeArtifactAuthToken.sh`
-            echo "export CODEARTIFACT_AUTH_TOKEN=${CODEARTIFACT_AUTH_TOKEN}" >> "$BASH_ENV"
-      - run:
-          name: Install Cmake
-          command: |
-            choco install cmake -y
-            $env:Path+=";$Env:ProgramFiles\CMake\bin"; ./makeall.bat
-      - run:
-          name: Install Java
-          command: choco install openjdk11 --version=21.0.0.0 -y
-      - run:
-          name: Checkout PortAudio
-          command: |
-            cd ..
-            git clone https://github.com/PortAudio/portaudio.git portaudio
-            cd portaudio
-            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
-      - run:
-          name: Build PortAudio x64
-          command: |
-            cd ../portaudio && mkdir x64 && cd x64
-            cmake -A x64 .. -DPA_BUILD_SHARED_LIBS=1
-            cmake --build . --config Release
-      -run:
-          name: Build JPortAudio x64
-          command: |
-            mkdir x64 && cd x64
-            cmake -A x64 .. -DPA_BUILD_SHARED_LIBS=1
-            cmake --build . --config Release
+            ./gradlew build -x test
+            ./gradlew test --tests=com.portaudio.TestBasic.testHostApis
+      - when:
+          condition:
+            and:
+              - equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: Publish release
+                command: |
+                  ./gradlew publish
 
 workflows:
   ci:
     jobs:
-      - macos-build:
-          context:
-            - CodeArtifact
-      - windows-build:
+      - generate-lib-mac-x64
+      - generate-lib-win-x64
+      - generate-lib-win-win32
+      - build-jar:
+          requires:
+            - generate-lib-mac-x64
+            - generate-lib-win-x64
+            - generate-lib-win-win32
           context:
             - CodeArtifact
