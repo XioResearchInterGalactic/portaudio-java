@@ -19,8 +19,12 @@ public final class FileUtils {
     }
 
     static void load(String libName) {
+        load(libName, libName);
+    }
+
+    static void load(String libName, String exportedName) {
         try {
-            Path dest = Files.createFile(dir.resolve(libName));
+            Path dest = Files.createFile(dir.resolve(exportedName));
             try (InputStream stream = FileUtils.class.getResourceAsStream("/" + libName)) {
                 Files.copy(Objects.requireNonNull(stream, "Failed to copy resource: " + libName), dest, StandardCopyOption.REPLACE_EXISTING);
                 System.load(dest.toAbsolutePath().toString());
