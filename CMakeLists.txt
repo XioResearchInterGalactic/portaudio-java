@@ -13,8 +13,8 @@ include_directories(portaudio/include)
 #link_directories(/usr/local/lib)
 link_directories(portaudio/pagit)
 link_directories(portaudio/pagit/lib)
-link_directories(portaudio/x64/Release)
-link_directories(portaudio/win32/Release)
+link_directories(portaudio/x64/RelWithDebInfo)
+link_directories(portaudio/win32/RelWithDebInfo)
 link_directories(portaudio/build)
 
 set (jportaudio_sources
