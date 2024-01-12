@@ -3,6 +3,7 @@ package com.portaudio;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
@@ -18,15 +19,11 @@ public final class FileUtils {
         }
     }
 
-    static void load(String libName) {
-        load(libName, libName);
-    }
-
-    static void load(String libName, String exportedName) {
+    static void load(String resource) {
         try {
-            Path dest = Files.createFile(dir.resolve(exportedName));
-            try (InputStream stream = FileUtils.class.getResourceAsStream("/" + libName)) {
-                Files.copy(Objects.requireNonNull(stream, "Failed to copy resource: " + libName), dest, StandardCopyOption.REPLACE_EXISTING);
+            Path dest = Files.createFile(dir.resolve(Paths.get(resource).getFileName()));
+            try (InputStream stream = FileUtils.class.getResourceAsStream("/" + resource)) {
+                Files.copy(Objects.requireNonNull(stream, "Failed to copy resource: " + resource), dest, StandardCopyOption.REPLACE_EXISTING);
                 System.load(dest.toAbsolutePath().toString());
             }
         } catch (Throwable t) {

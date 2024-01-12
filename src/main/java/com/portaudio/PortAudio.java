@@ -106,19 +106,19 @@ public class PortAudio
 		{
 			if( System.getProperty( "os.arch" ).contains( "64" ) )
 			{
-				FileUtils.load( "portaudio_x64.dll", "portaudio.dll");
-				FileUtils.load( "jportaudio_0_1_0_x64.dll", "jportaudio_0_1_0.dll");
+				FileUtils.load( "win/x64/portaudio.dll");
+				FileUtils.load( "win/x64/jportaudio_0_1_0.dll");
 			}
 			else
 			{
-				FileUtils.load( "portaudio_win32.dll", "portaudio.dll");
-				FileUtils.load( "jportaudio_0_1_0_win32.dll", "jportaudio_0_1_0.dll" );
+				FileUtils.load( "win/win32/portaudio.dll");
+				FileUtils.load( "win/win32/jportaudio_0_1_0.dll" );
 			}
 		}
 		else
 		{
-			FileUtils.load( "libportaudio.dylib" );
-			FileUtils.load( "libjportaudio_0_1_0.dylib" );
+			FileUtils.load( "darwin/libportaudio.dylib");
+			FileUtils.load( "darwin/libjportaudio_0_1_0.dylib");
 		}
 		System.out.println( "---- JPortAudio " + VERSION + ", " + getVersionText() );
 	}
