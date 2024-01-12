@@ -157,7 +157,7 @@ jobs:
             mkdir -p src/main/resources
             cp -R workspace/. src/main/resources
             cd src/main/resources
-            ls -l
+            find . -exec ls -l {} \;
       - run:
           name: Grant Gradle wrapper execution permission
           command: |
