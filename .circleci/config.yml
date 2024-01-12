@@ -73,14 +73,14 @@ jobs:
           name: Build PortAudio x64
           command: |
             cd portaudio && mkdir x64 && cd x64
-            cmake -A x64 .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPA_BUILD_SHARED_LIBS=1 -DPA_ENABLE_DEBUG_OUTPUT=1
-            cmake --build .
+            cmake -A x64 .. -DPA_BUILD_SHARED_LIBS=1 -DPA_ENABLE_DEBUG_OUTPUT=1
+            cmake --build . --config RelWithDebInfo
       - run:
           name: Build JPortAudio x64
           command: |
             mkdir x64 && cd x64
-            cmake -A x64 .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-            cmake --build .
+            cmake -A x64 .. 
+            cmake --build . --config RelWithDebInfo
       - run:
           name: Move files to workspace
           command: |
@@ -113,14 +113,14 @@ jobs:
           name: Build PortAudio x64
           command: |
             cd portaudio && mkdir Win32 && cd Win32
-            cmake -A Win32 .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPA_BUILD_SHARED_LIBS=1 -DPA_ENABLE_DEBUG_OUTPUT=1
-            cmake --build .
+            cmake -A Win32 .. -DPA_BUILD_SHARED_LIBS=1 -DPA_ENABLE_DEBUG_OUTPUT=1
+            cmake --build . --config RelWithDebInfo
       - run:
           name: Build JPortAudio x64
           command: |
             mkdir Win32 && cd Win32
-            cmake -A Win32 .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
-            cmake --build .
+            cmake -A Win32 ..
+            cmake --build . --config RelWithDebInfo
       - run:
           name: Move files to workspace
           command: |
