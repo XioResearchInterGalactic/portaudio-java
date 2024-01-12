@@ -44,12 +44,10 @@ jobs:
       - run:
           name: Move files to workspace
           command: |
-            mkdir workspace
-            cd workspace
+            mkdir -p workspace/darwin
+            cd workspace/darwin
             mv $CIRCLE_WORKING_DIRECTORY/portaudio/build/libportaudio.19.8.dylib libportaudio.dylib
             mv $CIRCLE_WORKING_DIRECTORY/build/libjportaudio_0_1_0.dylib .
-            file libportaudio.dylib
-            file libjportaudio_0_1_0.dylib
       - persist_to_workspace:
           root: .
           paths:
@@ -77,9 +75,6 @@ jobs:
             cd portaudio && mkdir x64 && cd x64
             cmake -A x64 .. -DPA_BUILD_SHARED_LIBS=1 -DPA_ENABLE_DEBUG_OUTPUT=1
             cmake --build . --config RelWithDebInfo
-            ls -l
-            cd RelWithDebInfo
-            ls -l
       - run:
           name: Build JPortAudio x64
           command: |
@@ -89,10 +84,11 @@ jobs:
       - run:
           name: Move files to workspace
           command: |
-            mkdir workspace
-            cd workspace
-            mv $CIRCLE_WORKING_DIRECTORY/portaudio/x64/RelWithDebInfo/portaudio.dll portaudio_x64.dll
-            mv $CIRCLE_WORKING_DIRECTORY/x64/RelWithDebInfo/jportaudio_0_1_0.dll jportaudio_0_1_0_x64.dll
+            mkdir -p workspace/win/x64
+            cd workspace/win/x64
+            mv $CIRCLE_WORKING_DIRECTORY/portaudio/x64/RelWithDebInfo/portaudio.dll .
+            mv $CIRCLE_WORKING_DIRECTORY/x64/RelWithDebInfo/jportaudio_0_1_0.dll .
+            ls -l
       - persist_to_workspace:
           root: .
           paths:
@@ -120,9 +116,6 @@ jobs:
             cd portaudio && mkdir Win32 && cd Win32
             cmake -A Win32 .. -DPA_BUILD_SHARED_LIBS=1 -DPA_ENABLE_DEBUG_OUTPUT=1
             cmake --build . --config RelWithDebInfo
-            ls -l
-            cd RelWithDebInfo
-            ls -l
       - run:
           name: Build JPortAudio x64
           command: |
@@ -132,10 +125,10 @@ jobs:
       - run:
           name: Move files to workspace
           command: |
-            mkdir workspace
-            cd workspace
-            mv $CIRCLE_WORKING_DIRECTORY/portaudio/Win32/RelWithDebInfo/portaudio.dll portaudio_win32.dll
-            mv $CIRCLE_WORKING_DIRECTORY/Win32/RelWithDebInfo/jportaudio_0_1_0.dll jportaudio_0_1_0_win32.dll
+            mkdir -p workspace/win/win32
+            cd workspace/win/win32
+            mv $CIRCLE_WORKING_DIRECTORY/portaudio/Win32/RelWithDebInfo/portaudio.dll .
+            mv $CIRCLE_WORKING_DIRECTORY/Win32/RelWithDebInfo/jportaudio_0_1_0.dll .
             ls -l
       - persist_to_workspace:
           root: .
