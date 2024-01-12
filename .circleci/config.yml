@@ -75,6 +75,9 @@ jobs:
             cd portaudio && mkdir x64 && cd x64
             cmake -A x64 .. -DPA_BUILD_SHARED_LIBS=1 -DPA_ENABLE_DEBUG_OUTPUT=1
             cmake --build . --config RelWithDebInfo
+            ls -l
+            cd RelWithDebInfo
+            ls -l
       - run:
           name: Build JPortAudio x64
           command: |
@@ -115,6 +118,9 @@ jobs:
             cd portaudio && mkdir Win32 && cd Win32
             cmake -A Win32 .. -DPA_BUILD_SHARED_LIBS=1 -DPA_ENABLE_DEBUG_OUTPUT=1
             cmake --build . --config RelWithDebInfo
+            ls -l
+            cd RelWithDebInfo
+            ls -l
       - run:
           name: Build JPortAudio x64
           command: |
