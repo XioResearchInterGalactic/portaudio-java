@@ -48,6 +48,8 @@ jobs:
             cd workspace
             mv $CIRCLE_WORKING_DIRECTORY/portaudio/build/libportaudio.19.8.dylib libportaudio.dylib
             mv $CIRCLE_WORKING_DIRECTORY/build/libjportaudio_0_1_0.dylib .
+            file libportaudio.dylib
+            file libjportaudio_0_1_0.dylib
       - persist_to_workspace:
           root: .
           paths:
