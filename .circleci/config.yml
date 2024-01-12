@@ -86,8 +86,8 @@ jobs:
           command: |
             mkdir workspace
             cd workspace
-            mv $CIRCLE_WORKING_DIRECTORY/portaudio/x64/Release/portaudio.dll portaudio_x64.dll
-            mv $CIRCLE_WORKING_DIRECTORY/x64/Release/jportaudio_0_1_0.dll jportaudio_0_1_0_x64.dll
+            mv $CIRCLE_WORKING_DIRECTORY/portaudio/x64/RelWithDebInfo/portaudio.dll portaudio_x64.dll
+            mv $CIRCLE_WORKING_DIRECTORY/x64/RelWithDebInfo/jportaudio_0_1_0.dll jportaudio_0_1_0_x64.dll
       - persist_to_workspace:
           root: .
           paths:
@@ -126,8 +126,8 @@ jobs:
           command: |
             mkdir workspace
             cd workspace
-            mv $CIRCLE_WORKING_DIRECTORY/portaudio/Win32/Release/portaudio.dll portaudio_win32.dll
-            mv $CIRCLE_WORKING_DIRECTORY/Win32/Release/jportaudio_0_1_0.dll jportaudio_0_1_0_win32.dll
+            mv $CIRCLE_WORKING_DIRECTORY/portaudio/Win32/RelWithDebInfo/portaudio.dll portaudio_win32.dll
+            mv $CIRCLE_WORKING_DIRECTORY/Win32/RelWithDebInfo/jportaudio_0_1_0.dll jportaudio_0_1_0_win32.dll
             ls -l
       - persist_to_workspace:
           root: .
