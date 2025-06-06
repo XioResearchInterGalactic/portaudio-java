@@ -141,7 +141,7 @@ jobs:
       - checkout
       - aws-cli/setup:
           aws_access_key_id: DEV_AWS_KEY_ID
-          aws_region: DEV_AWS_REGION
+          region: DEV_AWS_REGION
           aws_secret_access_key: DEV_AWS_SECRET
           profile_name: 619238747039_MerlynCodeArtifactAccess
       - attach_workspace:
