@@ -28,7 +28,7 @@ jobs:
           command: |
             git clone https://github.com/PortAudio/portaudio.git portaudio
             cd portaudio
-            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+            git checkout 4fc8ddeabb29167f3e92fb27cadc13e93de26d6e
       - run:
           name: Build PortAudio
           command: |
@@ -68,7 +68,7 @@ jobs:
           command: |
             git clone https://github.com/PortAudio/portaudio.git portaudio
             cd portaudio
-            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+            git checkout 4fc8ddeabb29167f3e92fb27cadc13e93de26d6e
       - run:
           name: Build PortAudio x64
           command: |
@@ -109,7 +109,7 @@ jobs:
           command: |
             git clone https://github.com/PortAudio/portaudio.git portaudio
             cd portaudio
-            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+            git checkout 4fc8ddeabb29167f3e92fb27cadc13e93de26d6e
       - run:
           name: Build PortAudio x64
           command: |
