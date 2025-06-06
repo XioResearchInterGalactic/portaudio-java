@@ -1,8 +1,8 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@3.2.0
-  macos: circleci/macos@2.4.1
+  aws-cli: circleci/aws-cli@5.1.0
+  macos: circleci/macos@2.5.2
   win: circleci/windows@5.0
 
 
@@ -28,7 +28,7 @@ jobs:
           command: |
             git clone https://github.com/PortAudio/portaudio.git portaudio
             cd portaudio
-            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+            git checkout 4fc8ddeabb29167f3e92fb27cadc13e93de26d6e
       - run:
           name: Build PortAudio
           command: |
@@ -68,7 +68,7 @@ jobs:
           command: |
             git clone https://github.com/PortAudio/portaudio.git portaudio
             cd portaudio
-            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+            git checkout 4fc8ddeabb29167f3e92fb27cadc13e93de26d6e
       - run:
           name: Build PortAudio x64
           command: |
@@ -109,7 +109,7 @@ jobs:
           command: |
             git clone https://github.com/PortAudio/portaudio.git portaudio
             cd portaudio
-            git checkout 49d17bac9a666f52b567d77f2cfceb5d99ee818a
+            git checkout 4fc8ddeabb29167f3e92fb27cadc13e93de26d6e
       - run:
           name: Build PortAudio x64
           command: |
@@ -140,10 +140,10 @@ jobs:
     steps:
       - checkout
       - aws-cli/setup:
-          aws-access-key-id: DEV_AWS_KEY_ID
-          aws-region: DEV_AWS_REGION
-          aws-secret-access-key: DEV_AWS_SECRET
-          profile-name: 619238747039_MerlynCodeArtifactAccess
+          aws_access_key_id: DEV_AWS_KEY_ID
+          region: DEV_AWS_REGION
+          aws_secret_access_key: DEV_AWS_SECRET
+          profile_name: 619238747039_MerlynCodeArtifactAccess
       - attach_workspace:
           at: .
       - run:
