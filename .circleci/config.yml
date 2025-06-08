@@ -33,13 +33,13 @@ jobs:
           name: Build PortAudio
           command: |
             cd portaudio && mkdir build && cd build
-            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPA_BUILD_SHARED_LIBS=1 -DPA_ENABLE_DEBUG_OUTPUT=1 -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPA_BUILD_SHARED_LIBS=1 -DPA_ENABLE_DEBUG_OUTPUT=1 -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="12.4"
             cmake --build .
       - run:
           name: Build JPortAudio
           command: |
             mkdir build && cd build
-            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+            cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="12.4"
             cmake --build .
       - run:
           name: Move files to workspace
