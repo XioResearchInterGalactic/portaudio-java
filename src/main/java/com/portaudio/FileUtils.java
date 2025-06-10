@@ -29,7 +29,7 @@ public final class FileUtils {
     //  to extract all the libraries to make the app slightly faster and reduce runtime errors.
     static void load(String resource) {
         try {
-            String libraryNameWithExtension = new File(resource).getName();
+            String libraryNameWithExtension = resource.substring(resource.lastIndexOf("/")+1); // passed path is win/win32/portaudio.dll or darwin/libportaudio.dylib, we just need the filename
             String libraryName;
             if (libraryNameWithExtension.contains("."))
                 libraryName = libraryNameWithExtension.substring(0, libraryNameWithExtension.lastIndexOf('.'));
