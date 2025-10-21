@@ -135,8 +135,8 @@ jobs:
           paths:
             - workspace
   build-jar:
-    docker:
-      - image: cimg/openjdk:17.0.4
+    macos:
+      xcode: 16.4.0
     steps:
       - checkout
       - aws-cli/setup:
