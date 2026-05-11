@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@5.1.0
+  aws-cli: circleci/aws-cli@5.4.1
   macos: circleci/macos@2.5.2
   win: circleci/windows@5.0
 
@@ -140,10 +140,9 @@ jobs:
     steps:
       - checkout
       - aws-cli/setup:
-          aws_access_key_id: DEV_AWS_KEY_ID
-          region: DEV_AWS_REGION
-          aws_secret_access_key: DEV_AWS_SECRET
-          profile_name: 619238747039_MerlynCodeArtifactAccess
+          role_arn: "arn:aws:iam::619238747039:role/CircleCI_OIDC_Infra"
+          session_duration: "1800"
+          role_session_name: "circleci-infra-build"
       - attach_workspace:
           at: .
       - run:
